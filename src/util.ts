@@ -77,3 +77,6 @@ export function formatDate(d: Date): string {
 
 export const appDB = App.mysql.db;
 if (!appDB) throw new Error("missing db");
+
+export const sysDB = App.mysql.sys;
+if (!sysDB) throw new Error("missing sysdb");

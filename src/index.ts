@@ -2,5 +2,6 @@
 
 import "./session";
 import "./applogic";
+import "./opslogic";
 
 Router.get("/", () => new Response("rwcp ok"));
