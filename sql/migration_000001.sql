@@ -31,4 +31,4 @@ create view `valid_session` as
     and `expiry` > current_timestamp(6)
     and exists (select 1 from valid_token where id = token_id);
 
-grant select on rwv2.applog_managed to rwcp;
+grant select on blueboat.applog_managed to bbcp;

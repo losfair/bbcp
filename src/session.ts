@@ -1,4 +1,4 @@
-import { JTDSchemaType } from "jsland-types/src/validation/jtd";
+import { JTDSchemaType } from "blueboat-types/src/validation/jtd";
 import { verifyOpSig } from "./crypto";
 import {
   appDB,
@@ -29,7 +29,7 @@ export interface SessionInfo {
 export async function getAuthenticatedSession(
   req: Request
 ): Promise<SessionInfo | string> {
-  const sessionId = req.headers.get("x-rwcp-session-id") || "";
+  const sessionId = req.headers.get("x-bbcp-session-id") || "";
 
   if (sessionId) {
     const res = (
@@ -94,7 +94,7 @@ async function processTokenGrant(
 
   const octokit = new ExternalService.GitHub.Octokit({
     auth: ghToken,
-    userAgent: "rwcp on rwv2 by z@univalence.me",
+    userAgent: "bbcp on blueboat by z@univalence.me",
   });
   const user = await octokit.rest.users.getAuthenticated();
   if (
@@ -158,7 +158,7 @@ async function processSessionGrant(
 
   const octokit = new ExternalService.GitHub.Octokit({
     auth: ghToken || "",
-    userAgent: "rwcp on rwv2 by z@univalence.me",
+    userAgent: "bbcp on blueboat by z@univalence.me",
   });
   const user = await octokit.rest.users.getAuthenticated();
   const sessionId = generate32chId();

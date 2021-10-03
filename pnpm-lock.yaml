@@ -5,9 +5,9 @@ specifiers:
   '@aws-sdk/s3-request-presigner': ^3.34.0
   '@types/cookie': ^0.4.1
   '@types/js-yaml': ^4.0.3
+  blueboat-types: link:../blueboat-dev/jsland-types
   cookie: ^0.4.1
   js-yaml: ^4.1.0
-  jsland-types: link:../rwv2/jsland-types
   prettier: ^2.4.1
   ts-loader: ^9.2.5
   typescript: ^4.4.3
@@ -24,7 +24,7 @@ dependencies:
 devDependencies:
   '@types/cookie': 0.4.1
   '@types/js-yaml': 4.0.3
-  jsland-types: link:../rwv2/jsland-types
+  blueboat-types: link:../blueboat-dev/jsland-types
   prettier: 2.4.1
   ts-loader: 9.2.6_typescript@4.4.3+webpack@5.55.1
   typescript: 4.4.3

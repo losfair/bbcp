@@ -15,8 +15,8 @@ if [ -z "$S3_BUCKET" ]; then
 fi
 
 ./build.sh
-RUST_LOG=info S3CMD_CFG=$CONFIG_PATH/s3.config ../rwv2/scripts/build_and_upload.mjs \
-  -f ./rwcp-build.tar \
+RUST_LOG=info S3CMD_CFG=$CONFIG_PATH/s3.config ../blueboat-dev/scripts/build_and_upload.mjs \
+  -f ./bbcp-build.tar \
   --mysql $CONFIG_PATH/mysql.json \
   --env $CONFIG_PATH/env.json \
-  --s3_bucket "$S3_BUCKET" --s3_prefix rwcp/
+  --s3_bucket "$S3_BUCKET" --s3_prefix rwcp/ # legacy compatibility

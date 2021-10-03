@@ -1,3 +1,3 @@
-# rwcp
+# bbcp
 
-Multi-user control plane service for rwv2. 
+Multi-user control plane service for blueboat. 

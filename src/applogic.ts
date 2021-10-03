@@ -18,7 +18,7 @@ import {
 } from "./util";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { JTDSchemaType } from "jsland-types/src/validation/jtd";
+import { JTDSchemaType } from "blueboat-types/src/validation/jtd";
 
 Router.get("/app/list", async (req) => {
   const sess = await ensureAuthenticatedSession(req);
@@ -130,9 +130,9 @@ Router.post("/app/create", async (req) => {
     ContentType: "application/json",
   });
 
-  // XXX: rwv2 strips off the port when generating the `host` header.
+  // XXX: blueboat strips off the port when generating the `host` header.
   // This behavior is incorrect, but is accidentally consistent with aws-sdk's signing behavior.
-  // https://github.com/losfair/rwv2/issues/1
+  // https://github.com/losfair/blueboat-dev/issues/1
   const signedUrl = await getSignedUrl(s3Client, s3Req);
   const s3Res = await fetch(signedUrl, {
     method: "PUT",

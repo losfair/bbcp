@@ -1,5 +1,5 @@
 {
-  "name": "rwcp",
+  "name": "bbcp",
   "version": "0.0.0",
   "description": "RW multi-user control plane",
   "main": "src/index.ts",
@@ -10,19 +10,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/losfair/rwcp.git"
+    "url": "git+https://github.com/losfair/bbcp.git"
   },
   "keywords": [],
   "author": "losfair",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/losfair/rwcp/issues"
+    "url": "https://github.com/losfair/bbcp/issues"
   },
-  "homepage": "https://github.com/losfair/rwcp#readme",
+  "homepage": "https://github.com/losfair/bbcp#readme",
   "devDependencies": {
     "@types/cookie": "^0.4.1",
     "@types/js-yaml": "^4.0.3",
-    "jsland-types": "link:../rwv2/jsland-types",
+    "blueboat-types": "link:../blueboat-dev/jsland-types",
     "prettier": "^2.4.1",
     "ts-loader": "^9.2.5",
     "typescript": "^4.4.3",
