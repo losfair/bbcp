@@ -1,9 +1,6 @@
-import {
-  GetObjectCommand,
-  ListObjectsV2Command,
-  S3Client,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+const { GetObjectCommand, ListObjectsV2Command, S3Client } =
+  ExternalService.AWS.S3Client;
+const { getSignedUrl } = ExternalService.AWS.S3RequestPresigner;
 
 const s3Ak = App.mustGetEnv("s3AccessKeyId");
 const s3Sk = App.mustGetEnv("s3SecretAccessKey");

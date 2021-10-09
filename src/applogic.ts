@@ -16,8 +16,8 @@ import {
   packageImagePrefix,
   s3PrefixFromGhid,
 } from "./util";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+const { PutObjectCommand } = ExternalService.AWS.S3Client;
+const { getSignedUrl } = ExternalService.AWS.S3RequestPresigner;
 import { JTDSchemaType } from "blueboat-types/src/validation/jtd";
 
 Router.get("/app/list", async (req) => {

@@ -21,7 +21,6 @@
   "homepage": "https://github.com/losfair/bbcp#readme",
   "devDependencies": {
     "@types/cookie": "^0.4.1",
-    "@types/js-yaml": "^4.0.3",
     "blueboat-types": "link:../blueboat-dev/jsland-types",
     "prettier": "^2.4.1",
     "ts-loader": "^9.2.5",
@@ -31,9 +30,6 @@
     "webpack-cli": "^4.3.1"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.34.0",
-    "@aws-sdk/s3-request-presigner": "^3.34.0",
-    "cookie": "^0.4.1",
-    "js-yaml": "^4.1.0"
+    "cookie": "^0.4.1"
   }
 }
