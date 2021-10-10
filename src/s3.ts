@@ -1,45 +1,52 @@
-const { GetObjectCommand, ListObjectsV2Command, S3Client } =
-  ExternalService.AWS.S3Client;
-const { getSignedUrl } = ExternalService.AWS.S3RequestPresigner;
+import { S3Credentials, S3GetObjectRequest, S3ListObjectsV2Request, S3PresignInfo, S3Region } from "blueboat-types/src/native_schema";
 
 const s3Ak = App.mustGetEnv("s3AccessKeyId");
 const s3Sk = App.mustGetEnv("s3SecretAccessKey");
 
-export const s3Client = new S3Client({
+const s3Credentials: S3Credentials = {
+  key: s3Ak,
+  secret: s3Sk,
+};
+const s3Region: S3Region = {
+  name: App.mustGetEnv("s3Region"),
   endpoint: App.env["s3Endpoint"],
-  region: App.mustGetEnv("s3Region"),
-  credentials: {
-    accessKeyId: s3Ak,
-    secretAccessKey: s3Sk,
-  },
-  forcePathStyle: true,
-});
+};
 
 export const s3Bucket = App.mustGetEnv("s3Bucket");
 export const s3Prefix = App.mustGetEnv("s3Prefix");
 
+export function signS3Request(info: S3PresignInfo): string {
+  return ExternalService.AWS.getPresignedUrl(s3Region, s3Credentials, info, {
+    expires_in_secs: 60,
+  });
+}
+
 export async function listUnderSubprefix(subprefix: string): Promise<string[]> {
   const fullPrefix = s3Prefix + subprefix;
-  const cmd = new ListObjectsV2Command({
-    Bucket: s3Bucket,
-    Prefix: fullPrefix,
-    Delimiter: "/",
-  });
-  const url = await getSignedUrl(s3Client, cmd, { expiresIn: 60 });
-  const res = await fetch(url);
-  const text = await res.text();
-  if (!res.ok) throw new Error("list bucket error: " + text);
-  return tearApartListBucketResponse(text)
-    .filter((x) => x.startsWith(fullPrefix))
-    .map((x) => x.substring(fullPrefix.length, x.length - 1));
+  const req: S3ListObjectsV2Request = {
+    bucket: s3Bucket,
+    prefix: fullPrefix,
+    delimiter: "/",
+  };
+  const res = await ExternalService.AWS.listObjectsV2(s3Region, s3Credentials, req);
+  const commonPrefixes = (res.common_prefixes || [])
+    .filter(x => x && x.startsWith(fullPrefix))
+    .map(x => x!.substring(fullPrefix.length, x!.length - 1));
+  return commonPrefixes;
 }
 
 export async function getObject(key: string): Promise<Uint8Array | null> {
-  const cmd = new GetObjectCommand({
-    Bucket: s3Bucket,
-    Key: key,
+  const req: S3GetObjectRequest = {
+    bucket: s3Bucket,
+    key,
+  };
+  const url = ExternalService.AWS.getPresignedUrl(s3Region, s3Credentials, {
+    type: "getObject",
+    request: req,
+  }, {
+    expires_in_secs: 60,
   });
-  const url = await getSignedUrl(s3Client, cmd, { expiresIn: 60 });
+  console.log(url);
   const res = await fetch(url);
   if (!res.ok) {
     if (res.status == 404) return null;
@@ -50,17 +57,4 @@ export async function getObject(key: string): Promise<Uint8Array | null> {
   }
 
   return new Uint8Array(await res.arrayBuffer());
-}
-
-// It's best if we parse the XML properly but...
-function tearApartListBucketResponse(xml: string): string[] {
-  const r = /<CommonPrefixes><Prefix>((.(?!<))*.)<\/Prefix><\/CommonPrefixes>/g;
-  const res: string[] = [];
-  while (true) {
-    const match = r.exec(xml);
-    if (!match) break;
-    res.push(match[1]);
-  }
-
-  return res;
 }

@@ -4,7 +4,7 @@ import {
   transformAppMetadataToFrontend,
   validateAndTransformAppMetadataFromFrontend,
 } from "./metadata";
-import { getObject, listUnderSubprefix, s3Bucket, s3Client } from "./s3";
+import { getObject, listUnderSubprefix, s3Bucket, signS3Request } from "./s3";
 import { ensureAuthenticatedSession } from "./session";
 import {
   buildAppPrefix,
@@ -16,9 +16,8 @@ import {
   packageImagePrefix,
   s3PrefixFromGhid,
 } from "./util";
-const { PutObjectCommand } = ExternalService.AWS.S3Client;
-const { getSignedUrl } = ExternalService.AWS.S3RequestPresigner;
 import { JTDSchemaType } from "blueboat-types/src/validation/jtd";
+import { S3PutObjectRequest } from "blueboat-types/src/native_schema";
 
 Router.get("/app/list", async (req) => {
   const sess = await ensureAuthenticatedSession(req);
@@ -76,13 +75,16 @@ Router.post("/app/upload", async (req) => {
     return mkJsonErrorResponse("invalid appid", 400);
 
   const imageId = `${formatDate(new Date())}-${generate32chId()}.tar`;
-  const s3Req = new PutObjectCommand({
-    Bucket: s3Bucket,
-    Key: buildAppPrefix(sess.ghid, body.appid) + packageImagePrefix + imageId,
-    ContentType: "application/x-tar",
-    ContentLength: body.content_length,
+  const s3Req: S3PutObjectRequest = {
+    bucket: s3Bucket,
+    key: buildAppPrefix(sess.ghid, body.appid) + packageImagePrefix + imageId,
+    content_type: "application/x-tar",
+    content_length: body.content_length,
+  };
+  const signedUrl = signS3Request({
+    type: "putObject",
+    request: s3Req,
   });
-  const signedUrl = await getSignedUrl(s3Client, s3Req);
   return mkJsonResponse({
     url: signedUrl,
     image_id: imageId,
@@ -124,16 +126,16 @@ Router.post("/app/create", async (req) => {
   }
   const metadataJson = JSON.stringify(body.metadata);
   const metadataKey = buildAppPrefix(sess.ghid, body.appid) + "metadata.json";
-  const s3Req = new PutObjectCommand({
-    Bucket: s3Bucket,
-    Key: metadataKey,
-    ContentType: "application/json",
-  });
+  const s3Req: S3PutObjectRequest = {
+    bucket: s3Bucket,
+    key: metadataKey,
+    content_type: "application/json",
+  };
 
-  // XXX: blueboat strips off the port when generating the `host` header.
-  // This behavior is incorrect, but is accidentally consistent with aws-sdk's signing behavior.
-  // https://github.com/losfair/blueboat-dev/issues/1
-  const signedUrl = await getSignedUrl(s3Client, s3Req);
+  const signedUrl = signS3Request({
+    type: "putObject",
+    request: s3Req,
+  });
   const s3Res = await fetch(signedUrl, {
     method: "PUT",
     body: metadataJson,
