@@ -46,7 +46,6 @@ export async function getObject(key: string): Promise<Uint8Array | null> {
   }, {
     expires_in_secs: 60,
   });
-  console.log(url);
   const res = await fetch(url);
   if (!res.ok) {
     if (res.status == 404) return null;
