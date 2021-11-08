@@ -47,6 +47,8 @@ Router.post("/ops/logs", async (req) => {
   if (body.reqid && !reqidMatcher.test(body.reqid))
     return mkJsonErrorResponse("invalid reqid", 400);
 
+  if(!sysDB) return mkJsonErrorResponse("sysDB not configured", 400);
+
   const apppath = buildAppPrefix(sess.ghid, body.appid) + "metadata.json";
   const limit =
     body.limit === 0 ? maxLogsPerQuery : Math.min(body.limit, maxLogsPerQuery);

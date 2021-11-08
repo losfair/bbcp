@@ -11,12 +11,22 @@ const s3Region: S3Region = {
   name: App.mustGetEnv("s3Region"),
   endpoint: App.env["s3Endpoint"],
 };
+const s3PublicRegion: S3Region = {
+  name: App.mustGetEnv("s3Region"),
+  endpoint: App.env["s3PublicEndpoint"] || App.env["s3Endpoint"],
+};
 
 export const s3Bucket = App.mustGetEnv("s3Bucket");
 export const s3Prefix = App.mustGetEnv("s3Prefix");
 
-export function signS3Request(info: S3PresignInfo): string {
+export function signInternalS3Request(info: S3PresignInfo): string {
   return ExternalService.AWS.getPresignedUrl(s3Region, s3Credentials, info, {
+    expires_in_secs: 60,
+  });
+}
+
+export function signPublicS3Request(info: S3PresignInfo): string {
+  return ExternalService.AWS.getPresignedUrl(s3PublicRegion, s3Credentials, info, {
     expires_in_secs: 60,
   });
 }

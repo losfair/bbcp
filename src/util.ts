@@ -1,3 +1,4 @@
+import { Mysql } from "blueboat-types/src/mysql";
 import { s3Prefix } from "./s3";
 
 export function generate32chId(): string {
@@ -78,5 +79,4 @@ export function formatDate(d: Date): string {
 export const appDB = App.mysql.db;
 if (!appDB) throw new Error("missing db");
 
-export const sysDB = App.mysql.sys;
-if (!sysDB) throw new Error("missing sysdb");
+export const sysDB: Mysql | undefined = App.mysql.sys;

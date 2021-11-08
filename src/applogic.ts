@@ -4,7 +4,7 @@ import {
   transformAppMetadataToFrontend,
   validateAndTransformAppMetadataFromFrontend,
 } from "./metadata";
-import { getObject, listUnderSubprefix, s3Bucket, signS3Request } from "./s3";
+import { getObject, listUnderSubprefix, s3Bucket, signInternalS3Request, signPublicS3Request } from "./s3";
 import { ensureAuthenticatedSession } from "./session";
 import {
   buildAppPrefix,
@@ -81,7 +81,7 @@ Router.post("/app/upload", async (req) => {
     content_type: "application/x-tar",
     content_length: body.content_length,
   };
-  const signedUrl = signS3Request({
+  const signedUrl = signPublicS3Request({
     type: "putObject",
     request: s3Req,
   });
@@ -132,7 +132,7 @@ Router.post("/app/create", async (req) => {
     content_type: "application/json",
   };
 
-  const signedUrl = signS3Request({
+  const signedUrl = signInternalS3Request({
     type: "putObject",
     request: s3Req,
   });
