@@ -21,7 +21,7 @@
   "homepage": "https://github.com/losfair/bbcp#readme",
   "devDependencies": {
     "@types/cookie": "^0.4.1",
-    "blueboat-types": "link:../blueboat-dev/jsland-types",
+    "blueboat-types": "link:../blueboat/jsland-types",
     "prettier": "^2.4.1",
     "ts-loader": "^9.2.5",
     "typescript": "^4.4.3",
