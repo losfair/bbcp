@@ -4,7 +4,7 @@ set -e
 
 npm run build
 
-TMP="$(mktemp --suffix=-bbcp-build -d)"
+TMP="$(mktemp -d)"
 
 cleanup()
 {
@@ -15,7 +15,6 @@ cleanup()
 trap cleanup EXIT
 
 cp "./dist/main.js" "$TMP/index.js"
-cp -r ./res "$TMP/"
 
 cd "$TMP" || exit 1
 tar c . > "$OLDPWD/bbcp-build.tar" || exit 1
