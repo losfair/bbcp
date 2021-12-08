@@ -12,6 +12,12 @@ export interface AppMetadata {
   env: Record<string, string>;
   mysql: Record<string, MysqlMetadata> | null;
   apns: Record<string, ApnsMetadata> | null;
+  kv_namespaces: Record<string, KvNamespaceMetadata> | null;
+}
+
+export interface KvNamespaceMetadata {
+  shard: string;
+  prefix: string;
 }
 
 export interface MysqlMetadata {
@@ -49,6 +55,15 @@ export const schema_AppMetadata: JTDSchemaType<AppMetadata> = {
       },
       nullable: true,
     },
+    kv_namespaces: {
+      values: {
+        properties: {
+          shard: { type: "string" },
+          prefix: { type: "string" },
+        },
+      },
+      nullable: true,
+    }
   },
 };
 
