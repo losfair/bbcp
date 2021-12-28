@@ -18,6 +18,7 @@ export interface AppMetadata {
 export interface KvNamespaceMetadata {
   shard: string;
   prefix: string;
+  raw?: boolean;
 }
 
 export interface MysqlMetadata {
@@ -61,6 +62,9 @@ export const schema_AppMetadata: JTDSchemaType<AppMetadata> = {
           shard: { type: "string" },
           prefix: { type: "string" },
         },
+        optionalProperties: {
+          raw: { type: "boolean" },
+        }
       },
       nullable: true,
     }
